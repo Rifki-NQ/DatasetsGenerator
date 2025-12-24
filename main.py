@@ -1,0 +1,31 @@
+from core.utils import Validation
+
+class MainMenu:
+    def __init__(self, total_menu):
+        self.running = True
+        self.total_menu = total_menu
+        
+    def show_menu(self):
+        print("Datasets Generator")
+        print("< ------------------------ >")
+        print("1. Create randomized datasets")
+        
+    def handle_choice(self, index):
+        if Validation.check_input(index, 1, self.total_menu):
+            print("oke!")
+            pass
+        elif index.lower() == "q":
+            self.exit()
+
+    def run(self):
+        self.show_menu()
+        while self.running:
+            index = input("Select by index (q for quit): ")
+            self.handle_choice(index)
+    
+    def exit(self):
+        self.running = False
+    
+if __name__ == "__main__":
+    app = MainMenu(5)
+    app.run()
