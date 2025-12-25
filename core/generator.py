@@ -32,8 +32,17 @@ class Generator:
             return
         self.data_config(custom_columns=False)
         #generate the dataset
+        generated_columns = []
+        generated_df = {}
         for column in range(self.columns_length):
-            pass
+            generated_columns.append(self.randomizer(5).upper())
+            generated_rows = []
+            for row in range(self.rows_length):
+                generated_rows.append(self.randomizer(5))
+            generated_df[generated_columns[column]] = generated_rows
+        #add generated dataset to dataframe
+        self.df = pd.DataFrame(generated_df)
+        self.df = self.df.to_csv(self.file_path, index=False)
         print("success!")
     
     def generate_custom(self):
@@ -52,8 +61,13 @@ class Generator:
     
     def check_dataset(self):
         try:
-            df = pd.read_csv(self.file_path)
+            self.df = pd.read_csv(self.file_path)
             overwrite = self.ask_overwrite()
             return overwrite
         except:
+            self.df = pd.DataFrame()
             return True
+        
+    def randomizer(self, string_length: int) -> str:
+        rand_string = "".join(random.choices(string.ascii_letters, k=string_length))
+        return rand_string
