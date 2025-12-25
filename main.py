@@ -1,4 +1,5 @@
 from core.utils import Validation
+from core.generator import Generator
 
 class MainMenu:
     def __init__(self, total_menu):
@@ -12,8 +13,10 @@ class MainMenu:
         
     def handle_choice(self, index):
         if Validation.check_input(index, 1, self.total_menu):
-            print("oke!")
-            pass
+            index = int(index)
+            if index == 1:
+                generator = Generator("data/data1.csv")
+                generator.generate()
         elif index.lower() == "q":
             self.exit()
 
@@ -27,5 +30,5 @@ class MainMenu:
         self.running = False
     
 if __name__ == "__main__":
-    app = MainMenu(5)
+    app = MainMenu(1)
     app.run()
