@@ -21,8 +21,8 @@ class MainMenu:
             self.exit()
 
     def run(self):
-        self.show_menu()
         while self.running:
+            self.show_menu()
             index = input("Select by index (q for quit): ")
             self.handle_choice(index)
     
