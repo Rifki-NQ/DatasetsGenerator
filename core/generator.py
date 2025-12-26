@@ -7,6 +7,8 @@ class Generator:
         self.file_path = file_path
         self.columns_length = 0
         self.rows_length = 0
+        self.custom_columns_name = []
+        self.custom_columns_type = {}
         
     def data_config(self, custom_columns: bool):
         while True:
@@ -25,6 +27,24 @@ class Generator:
                 print("Length of row must be at least 1")
             else:
                 print("Length of row must be digit!")
+        #custom columns (optional)
+        if custom_columns:
+            #input custom columns name
+            self.custom_columns_name = []
+            skip_custom_columns = False
+            for i in range(self.columns_length):
+                if not skip_custom_columns:
+                    column_name = input(f"Enter name for column no. {i} (s to skip the rest): ")
+                    #option if user want to randomize the rest of columns name
+                    if column_name.lower() == "s":
+                        skip_custom_columns = True
+                        self.custom_columns_name.append(self.randomizer(5))
+                        continue
+                    self.custom_columns_name.append(column_name)
+                else:
+                    self.custom_columns_name.append(self.randomizer(5))
+            #select data type for each columns
+            
     
     def generate(self):
         if not self.check_dataset():
@@ -46,7 +66,20 @@ class Generator:
         print("success!")
     
     def generate_custom(self):
-        pass
+        if not self.check_dataset():
+            print("Cancelled!")
+            return
+        self.data_config(custom_columns=True)
+        generated_df = {}
+        for column in range(self.columns_length):
+            generated_rows = []
+            for row in range(self.rows_length):
+                generated_rows.append(self.randomizer(5))
+            generated_df[self.custom_columns_name[column]] = generated_rows
+        #add generated dataset to dataframe
+        self.df = pd.DataFrame(generated_df)
+        self.df = self.df.to_csv(self.file_path, index=False)
+        print("success!")
     
     def ask_overwrite(self) -> bool:
         print("Data file already has data inside it, overwrite?")

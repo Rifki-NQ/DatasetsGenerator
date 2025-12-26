@@ -9,14 +9,17 @@ class MainMenu:
     def show_menu(self):
         print("Datasets Generator")
         print("< ------------------------ >")
-        print("1. Create randomized datasets")
+        print("1. Create randomized dataset")
+        print("2. Create custom randomized dataset")
         
     def handle_choice(self, index):
         if Validation.check_input(index, 1, self.total_menu):
             index = int(index)
+            generator = Generator("data/data1.csv")
             if index == 1:
-                generator = Generator("data/data1.csv")
                 generator.generate()
+            elif index == 2:
+                generator.generate_custom()
         elif index.lower() == "q":
             self.exit()
 
@@ -30,5 +33,5 @@ class MainMenu:
         self.running = False
     
 if __name__ == "__main__":
-    app = MainMenu(1)
+    app = MainMenu(2)
     app.run()
