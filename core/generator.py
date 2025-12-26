@@ -1,4 +1,5 @@
 import pandas as pd
+import numpy as np
 import random
 import string
 
@@ -9,6 +10,11 @@ class Generator:
         self.rows_length = 0
         self.custom_columns_name = []
         self.custom_columns_type = {}
+        self.random_str_length = 5
+        self.random_int_min = 0
+        self.random_int_max = 10
+        self.random_float_min = 1
+        self.random_float_max = 10
         
     def data_config(self, custom_columns: bool):
         while True:
@@ -38,11 +44,11 @@ class Generator:
                     #option if user want to randomize the rest of columns name
                     if column_name.lower() == "s":
                         skip_custom_columns = True
-                        self.custom_columns_name.append(self.randomizer(5))
+                        self.custom_columns_name.append(self.randomizer(value_type="str"))
                         continue
                     self.custom_columns_name.append(column_name)
                 else:
-                    self.custom_columns_name.append(self.randomizer(5))
+                    self.custom_columns_name.append(self.randomizer(value_type="str"))
             #select data type for each columns
             
     
@@ -55,10 +61,10 @@ class Generator:
         generated_columns = []
         generated_df = {}
         for column in range(self.columns_length):
-            generated_columns.append(self.randomizer(5).upper())
+            generated_columns.append(self.randomizer(value_type="str").upper())
             generated_rows = []
             for row in range(self.rows_length):
-                generated_rows.append(self.randomizer(5))
+                generated_rows.append(self.randomizer(value_type="mixed"))
             generated_df[generated_columns[column]] = generated_rows
         #add generated dataset to dataframe
         self.df = pd.DataFrame(generated_df)
@@ -74,7 +80,7 @@ class Generator:
         for column in range(self.columns_length):
             generated_rows = []
             for row in range(self.rows_length):
-                generated_rows.append(self.randomizer(5))
+                generated_rows.append(self.randomizer(value_type="str"))
             generated_df[self.custom_columns_name[column]] = generated_rows
         #add generated dataset to dataframe
         self.df = pd.DataFrame(generated_df)
@@ -101,6 +107,17 @@ class Generator:
             self.df = pd.DataFrame()
             return True
         
-    def randomizer(self, string_length: int) -> str:
-        rand_string = "".join(random.choices(string.ascii_letters, k=string_length))
-        return rand_string
+    def randomizer(self, value_type: str):
+        if value_type == "str":
+            rand_string = "".join(random.choices(string.ascii_letters, k=self.random_str_length))
+            return rand_string
+        elif value_type == "int":
+            rand_int = np.random.randint(self.random_int_min, self.random_int_max)
+            return rand_int
+        elif value_type == "float":
+            rand_float = round(np.random.uniform(self.random_float_min, self.random_float_max), 2)
+            return rand_float
+        elif value_type == "mixed":
+            rand_value_type = random.choice(["str", "int", "float"])
+            rand_mixed = self.randomizer(rand_value_type)
+            return rand_mixed
