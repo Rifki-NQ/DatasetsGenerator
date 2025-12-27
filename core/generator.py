@@ -7,6 +7,7 @@ from core.utils import Validation
 class Generator:
     def __init__(self, file_path):
         self.file_path = file_path
+        self.generated_df = {}
         self.columns_length = 0
         self.rows_length = 0
         self.custom_columns_name = []
@@ -81,40 +82,43 @@ class Generator:
                 self.custom_columns_type.append("str")
     
     def generate(self):
-        if not self.check_dataset():
-            print("Cancelled!")
-            return
         self.data_config()
         #generate the dataset
         generated_columns = []
-        generated_df = {}
+        self.generated_df = {}
         for column in range(self.columns_length):
             generated_columns.append(self.randomizer(value_type="str").upper())
             generated_rows = []
             for row in range(self.rows_length):
                 generated_rows.append(self.randomizer(value_type="str"))
-            generated_df[generated_columns[column]] = generated_rows
-        #add generated dataset to dataframe
-        self.df = pd.DataFrame(generated_df)
-        self.df = self.df.to_csv(self.file_path, index=False)
-        print("success!")
+            self.generated_df[generated_columns[column]] = generated_rows
+        self.save_dataframe()
     
     def generate_custom(self):
-        if not self.check_dataset():
-            print("Cancelled!")
-            return
         self.data_config_custom()
-        generated_df = {}
+        self.generated_df = {}
         for column in range(self.columns_length):
             generated_rows = []
             custom_type = self.custom_columns_type[column]
             for row in range(self.rows_length):
                 generated_rows.append(self.randomizer(value_type=custom_type))
-            generated_df[self.custom_columns_name[column]] = generated_rows
-        #add generated dataset to dataframe
-        self.df = pd.DataFrame(generated_df)
-        self.df = self.df.to_csv(self.file_path, index=False)
-        print("success!")
+            self.generated_df[self.custom_columns_name[column]] = generated_rows
+        self.save_dataframe()
+    
+    def start_generating(self, custom: bool):
+        if not self.check_dataset():
+            print("Cancelled!")
+            return
+        else:
+            if custom:
+                self.generate_custom()
+            else:
+                self.generate()
+            print("Dataset generated successfully!")
+    
+    def save_dataframe(self):
+        self.df = pd.DataFrame(self.generated_df)
+        self.df.to_csv(self.file_path, index=False)
     
     def ask_overwrite(self) -> bool:
         print("Data file already has data inside it, overwrite?")

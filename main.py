@@ -8,7 +8,7 @@ class MainMenu:
         
     def show_menu(self):
         print("Datasets Generator")
-        print("< ------------------------ >")
+        print("< ---------------- >")
         print("1. Create randomized dataset")
         print("2. Create custom randomized dataset")
         
@@ -17,9 +17,9 @@ class MainMenu:
             index = int(index)
             generator = Generator("data/data1.csv")
             if index == 1:
-                generator.generate()
+                generator.start_generating(custom=False)
             elif index == 2:
-                generator.generate_custom()
+                generator.start_generating(custom=True)
         elif index.lower() == "q":
             self.exit()
 
@@ -28,6 +28,7 @@ class MainMenu:
             self.show_menu()
             index = input("Select by index (q for quit): ")
             self.handle_choice(index)
+            print("< ------------------------ >")
     
     def exit(self):
         self.running = False
