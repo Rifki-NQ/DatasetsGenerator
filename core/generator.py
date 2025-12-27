@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 import random
 import string
+from core.utils import Validation
 
 class Generator:
     def __init__(self, file_path):
@@ -9,10 +10,10 @@ class Generator:
         self.columns_length = 0
         self.rows_length = 0
         self.custom_columns_name = []
-        self.custom_columns_type = {}
+        self.custom_columns_type = []
         self.random_str_length = 5
         self.random_int_min = 0
-        self.random_int_max = 10
+        self.random_int_max = 11
         self.random_float_min = 1
         self.random_float_max = 10
         
@@ -50,7 +51,29 @@ class Generator:
                 else:
                     self.custom_columns_name.append(self.randomizer(value_type="str"))
             #select data type for each columns
-            
+            self.custom_columns_type = []
+            skip_custom_type = False
+            print("1. String\n2. Int\n3. Float\n4. Mixed")
+            print("Enter s to skip the rest (the rest will be string type)")
+            for i in range(self.columns_length):
+                #input custom columns type
+                if not skip_custom_type:
+                    column_type_index = input(f"Enter type for column {self.custom_columns_name[i]} by index: ")
+                    if column_type_index.lower() == "s":
+                        skip_custom_type = True
+                        self.custom_columns_type.append("str")
+                    elif Validation.check_input(column_type_index, 1, 4):
+                        column_type_index = int(column_type_index)
+                        if column_type_index == 1:
+                            self.custom_columns_type.append("str")
+                        elif column_type_index == 2:
+                            self.custom_columns_type.append("int")
+                        elif column_type_index == 3:
+                            self.custom_columns_type.append("float")
+                        elif column_type_index == 4:
+                            self.custom_columns_type.append("mixed")
+                else:
+                    self.custom_columns_type.append("str")
     
     def generate(self):
         if not self.check_dataset():
@@ -64,7 +87,7 @@ class Generator:
             generated_columns.append(self.randomizer(value_type="str").upper())
             generated_rows = []
             for row in range(self.rows_length):
-                generated_rows.append(self.randomizer(value_type="mixed"))
+                generated_rows.append(self.randomizer(value_type="str"))
             generated_df[generated_columns[column]] = generated_rows
         #add generated dataset to dataframe
         self.df = pd.DataFrame(generated_df)
@@ -79,8 +102,9 @@ class Generator:
         generated_df = {}
         for column in range(self.columns_length):
             generated_rows = []
+            custom_type = self.custom_columns_type[column]
             for row in range(self.rows_length):
-                generated_rows.append(self.randomizer(value_type="str"))
+                generated_rows.append(self.randomizer(value_type=custom_type))
             generated_df[self.custom_columns_name[column]] = generated_rows
         #add generated dataset to dataframe
         self.df = pd.DataFrame(generated_df)
