@@ -12,12 +12,12 @@ class Generator:
         self.custom_columns_name = []
         self.custom_columns_type = []
         self.random_str_length = 5
-        self.random_int_min = 0
-        self.random_int_max = 11
+        self.random_int_min = 1
+        self.random_int_max = 100
         self.random_float_min = 1
-        self.random_float_max = 10
-        
-    def data_config(self, custom_columns: bool):
+        self.random_float_max = 100
+    
+    def data_config(self):
         while True:
             self.columns_length = input("Select length of column: ")
             if self.columns_length.isdigit():
@@ -34,52 +34,57 @@ class Generator:
                 print("Length of row must be at least 1")
             else:
                 print("Length of row must be digit!")
-        #custom columns (optional)
-        if custom_columns:
-            #input custom columns name
-            self.custom_columns_name = []
-            skip_custom_columns = False
-            for i in range(self.columns_length):
-                if not skip_custom_columns:
-                    column_name = input(f"Enter name for column no. {i} (s to skip the rest): ")
-                    #option if user want to randomize the rest of columns name
-                    if column_name.lower() == "s":
-                        skip_custom_columns = True
-                        self.custom_columns_name.append(self.randomizer(value_type="str"))
-                        continue
-                    self.custom_columns_name.append(column_name)
-                else:
+                    
+    def data_config_custom(self):
+        self.data_config()
+        self.column_custom_name()
+        self.column_custom_type()
+    
+    def column_custom_name(self):
+        self.custom_columns_name = []
+        skip_custom_columns = False
+        for i in range(self.columns_length):
+            if not skip_custom_columns:
+                column_name = input(f"Enter name for column no. {i} (s to skip the rest): ")
+                #option if user want to randomize the rest of columns name
+                if column_name.lower() == "s":
+                    skip_custom_columns = True
                     self.custom_columns_name.append(self.randomizer(value_type="str"))
-            #select data type for each columns
-            self.custom_columns_type = []
-            skip_custom_type = False
-            print("1. String\n2. Int\n3. Float\n4. Mixed")
-            print("Enter s to skip the rest (the rest will be string type)")
-            for i in range(self.columns_length):
-                #input custom columns type
-                if not skip_custom_type:
-                    column_type_index = input(f"Enter type for column {self.custom_columns_name[i]} by index: ")
-                    if column_type_index.lower() == "s":
-                        skip_custom_type = True
-                        self.custom_columns_type.append("str")
-                    elif Validation.check_input(column_type_index, 1, 4):
-                        column_type_index = int(column_type_index)
-                        if column_type_index == 1:
-                            self.custom_columns_type.append("str")
-                        elif column_type_index == 2:
-                            self.custom_columns_type.append("int")
-                        elif column_type_index == 3:
-                            self.custom_columns_type.append("float")
-                        elif column_type_index == 4:
-                            self.custom_columns_type.append("mixed")
-                else:
+                    continue
+                self.custom_columns_name.append(column_name)
+            else:
+                self.custom_columns_name.append(self.randomizer(value_type="str"))
+    
+    def column_custom_type(self):
+        self.custom_columns_type = []
+        skip_custom_type = False
+        print("1. String\n2. Int\n3. Float\n4. Mixed")
+        print("Enter s to skip the rest (the rest will be string type)")
+        for i in range(self.columns_length):
+            #input custom columns type
+            if not skip_custom_type:
+                column_type_index = input(f"Enter type for column {self.custom_columns_name[i]} by index: ")
+                if column_type_index.lower() == "s":
+                    skip_custom_type = True
                     self.custom_columns_type.append("str")
+                elif Validation.check_input(column_type_index, 1, 4):
+                    column_type_index = int(column_type_index)
+                    if column_type_index == 1:
+                        self.custom_columns_type.append("str")
+                    elif column_type_index == 2:
+                        self.custom_columns_type.append("int")
+                    elif column_type_index == 3:
+                        self.custom_columns_type.append("float")
+                    elif column_type_index == 4:
+                        self.custom_columns_type.append("mixed")
+            else:
+                self.custom_columns_type.append("str")
     
     def generate(self):
         if not self.check_dataset():
             print("Cancelled!")
             return
-        self.data_config(custom_columns=False)
+        self.data_config()
         #generate the dataset
         generated_columns = []
         generated_df = {}
@@ -98,7 +103,7 @@ class Generator:
         if not self.check_dataset():
             print("Cancelled!")
             return
-        self.data_config(custom_columns=True)
+        self.data_config_custom()
         generated_df = {}
         for column in range(self.columns_length):
             generated_rows = []
