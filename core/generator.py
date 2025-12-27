@@ -12,12 +12,63 @@ class Generator:
         self.rows_length = 0
         self.custom_columns_name = []
         self.custom_columns_type = []
-        self.random_str_length = 5
-        self.random_int_min = 1
-        self.random_int_max = 100
-        self.random_float_min = 1
-        self.random_float_max = 100
+        self.random_setting_value_path = "data/random_values_setting.csv"
+        self.update_random_values(how="pull")
     
+    def update_random_values(self, how=""):
+        if how == "push":
+            updated_random_values = {
+                "random_str_length": self.random_str_length,
+                "random_int_min": self.random_int_min,
+                "random_int_max": self.random_int_max,
+                "random_float_min": self.random_float_min,
+                "random_float_max": self.random_float_max,
+                "random_float_round": self.random_float_round,
+            }
+            df = pd.DataFrame(updated_random_values, index=[0])
+            df.to_csv(self.random_setting_value_path, index=False)
+        elif how == "pull":
+            df = pd.read_csv(self.random_setting_value_path)
+            self.random_str_length = df["random_str_length"].tolist()[0]
+            self.random_int_min = df["random_int_min"].tolist()[0]
+            self.random_int_max = df["random_int_max"].tolist()[0]
+            self.random_float_min = df["random_float_min"].tolist()[0]
+            self.random_float_max = df["random_float_max"].tolist()[0]
+            self.random_float_round  = df["random_float_round"].tolist()[0]
+    
+    def set_random_values(self):
+        while True:
+            str_length = input("Set random string length: ")
+            if str_length.isdigit():
+                self.random_str_length = int(str_length)
+                break
+        while True:
+            int_min = input("Set random int minimum value: ")
+            if int_min.isdigit():
+                self.random_int_min = int(int_min)
+                break
+        while True:
+            int_max = input("Set random int maximum value: ")
+            if int_max.isdigit():
+                self.random_int_max = int(int_max)
+                break
+        while True:
+            float_min = input("Set random float minimum value: ")
+            if float_min.isdigit():
+                self.random_float_min = int(float_min)
+                break
+        while True:
+            float_max = input("Set random float maximum value: ")
+            if float_max.isdigit():
+                self.random_float_max = int(float_max)
+                break
+        while True:
+            float_round = input("Set random float round value: ")
+            if float_round.isdigit():
+                self.random_float_round = int(float_round)
+                break
+        self.update_random_values(how="push")
+            
     def data_config(self):
         while True:
             self.columns_length = input("Select length of column: ")
@@ -148,7 +199,7 @@ class Generator:
             rand_int = np.random.randint(self.random_int_min, self.random_int_max)
             return rand_int
         elif value_type == "float":
-            rand_float = round(np.random.uniform(self.random_float_min, self.random_float_max), 2)
+            rand_float = round(np.random.uniform(self.random_float_min, self.random_float_max), self.random_float_round)
             return rand_float
         elif value_type == "mixed":
             rand_value_type = random.choice(["str", "int", "float"])

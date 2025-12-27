@@ -11,6 +11,7 @@ class MainMenu:
         print("< ---------------- >")
         print("1. Create randomized dataset")
         print("2. Create custom randomized dataset")
+        print("3. Set random values")
         
     def handle_choice(self, index):
         if Validation.check_input(index, 1, self.total_menu):
@@ -20,6 +21,8 @@ class MainMenu:
                 generator.start_generating(custom=False)
             elif index == 2:
                 generator.start_generating(custom=True)
+            elif index == 3:
+                generator.set_random_values()
         elif index.lower() == "q":
             self.exit()
 
@@ -34,5 +37,5 @@ class MainMenu:
         self.running = False
     
 if __name__ == "__main__":
-    app = MainMenu(2)
+    app = MainMenu(3)
     app.run()
