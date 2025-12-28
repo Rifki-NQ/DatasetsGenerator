@@ -2,17 +2,17 @@ import pandas as pd
 import numpy as np
 import random
 import string
-from core.utils import Validation
+from core.utils import Validation, DataIO
 
 class Generator:
     def __init__(self, file_path):
         self.file_path = file_path
+        self.random_setting_value_path = "data/random_values_setting.csv"
         self.generated_df = {}
         self.columns_length = 0
         self.rows_length = 0
         self.custom_columns_name = []
         self.custom_columns_type = []
-        self.random_setting_value_path = "data/random_values_setting.csv"
         self.update_random_values(how="pull")
     
     def update_random_values(self, how=""):
@@ -28,13 +28,19 @@ class Generator:
             df = pd.DataFrame(updated_random_values, index=[0])
             df.to_csv(self.random_setting_value_path, index=False)
         elif how == "pull":
-            df = pd.read_csv(self.random_setting_value_path)
-            self.random_str_length = df["random_str_length"].tolist()[0]
-            self.random_int_min = df["random_int_min"].tolist()[0]
-            self.random_int_max = df["random_int_max"].tolist()[0]
-            self.random_float_min = df["random_float_min"].tolist()[0]
-            self.random_float_max = df["random_float_max"].tolist()[0]
-            self.random_float_round  = df["random_float_round"].tolist()[0]
+            data_io = DataIO(self.random_setting_value_path, value_setting=True)
+            if data_io.read_data() is None:
+                self.set_random_values()
+            elif data_io.check_random_values_headers():
+                self.set_random_values()
+            else:
+                df = data_io.read_data()
+                self.random_str_length = df["random_str_length"].tolist()[0]
+                self.random_int_min = df["random_int_min"].tolist()[0]
+                self.random_int_max = df["random_int_max"].tolist()[0]
+                self.random_float_min = df["random_float_min"].tolist()[0]
+                self.random_float_max = df["random_float_max"].tolist()[0]
+                self.random_float_round  = df["random_float_round"].tolist()[0]
     
     def set_random_values(self):
         while True:
@@ -159,7 +165,8 @@ class Generator:
             for row in range(self.rows_length):
                 generated_rows.append(self.randomizer(value_type="str"))
             self.generated_df[generated_columns[column]] = generated_rows
-        self.save_dataframe()
+        data_io = DataIO(self.file_path, value_setting=False)
+        data_io.save_dataframe(self.generated_df)
     
     def generate_custom(self):
         self.data_config_custom()
@@ -170,7 +177,8 @@ class Generator:
             for row in range(self.rows_length):
                 generated_rows.append(self.randomizer(value_type=custom_type))
             self.generated_df[self.custom_columns_name[column]] = generated_rows
-        self.save_dataframe()
+        data_io = DataIO(self.file_path, value_setting=False)
+        data_io.save_dataframe(self.generated_df)
     
     def start_generating(self, custom: bool):
         if not self.check_dataset():
@@ -182,10 +190,6 @@ class Generator:
             else:
                 self.generate()
             print("Dataset generated successfully!")
-    
-    def save_dataframe(self):
-        self.df = pd.DataFrame(self.generated_df)
-        self.df.to_csv(self.file_path, index=False)
     
     def ask_overwrite(self) -> bool:
         print("Data file already has data inside it, overwrite?")
