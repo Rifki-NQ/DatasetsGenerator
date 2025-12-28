@@ -1,2 +1,2 @@
 random_str_length,random_int_min,random_int_max,random_float_min,random_float_max,random_float_round
-6,1,50,1,101,2
+5,1,101,1,101,2

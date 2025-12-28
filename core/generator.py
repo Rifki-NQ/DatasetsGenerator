@@ -42,31 +42,47 @@ class Generator:
             if str_length.isdigit():
                 self.random_str_length = int(str_length)
                 break
+            else:
+                print("value must be in digit!")
         while True:
             int_min = input("Set random int minimum value: ")
             if int_min.isdigit():
                 self.random_int_min = int(int_min)
                 break
+            else:
+                print("value must be in digit!")
         while True:
             int_max = input("Set random int maximum value: ")
-            if int_max.isdigit():
+            if int_max.isdigit() and int(int_max) > int(int_min):
                 self.random_int_max = int(int_max)
                 break
+            elif int_max.isdigit():
+                print("max must be higher than min!")
+            else:
+                print("value must be in digit!")
         while True:
             float_min = input("Set random float minimum value: ")
             if float_min.isdigit():
                 self.random_float_min = int(float_min)
                 break
+            else:
+                print("value must be in digit!")
         while True:
             float_max = input("Set random float maximum value: ")
-            if float_max.isdigit():
+            if float_max.isdigit() and int(float_max) > int(float_min):
                 self.random_float_max = int(float_max)
                 break
+            elif float_max.isdigit():
+                print("max must be higher than min!")
+            else:
+                print("value must be in digit!")
         while True:
             float_round = input("Set random float round value: ")
             if float_round.isdigit():
                 self.random_float_round = int(float_round)
                 break
+            else:
+                print("value must be in digit!")
         self.update_random_values(how="push")
             
     def data_config(self):
