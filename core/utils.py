@@ -42,6 +42,18 @@ class DataIO:
             print("please input new random values")
             return None
         
+    def input_file_name(self):
+        while True:
+            filename = input("Enter file name for the generated dataset: ")
+            if filename[-4:] != ".csv":
+                print("file must be csv!")
+                return False
+            elif filename == "random_values_setting.csv":
+                print("filename cannot be the same as random values setting!")
+                return False
+            else:
+                self.file_path = f"data/{filename}"
+        
     def check_random_values_headers(self):
         df = self.read_data()
         if self.value_setting and df.columns.tolist() != self.value_setting_headers:
