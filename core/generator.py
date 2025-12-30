@@ -92,22 +92,8 @@ class Generator:
         self.update_random_values(how="push")
             
     def data_config(self):
-        while True:
-            self.columns_length = input("Select length of column: ")
-            if self.columns_length.isdigit():
-                self.columns_length = int(self.columns_length)
-                break
-            else:
-                print("length of column must be digit!")
-        while True:
-            self.rows_length = input("Select length of row: ")
-            if self.rows_length.isdigit() and int(self.rows_length) > 0:
-                self.rows_length = int(self.rows_length)
-                break
-            elif self.rows_length.isdigit():
-                print("Length of row must be at least 1")
-            else:
-                print("Length of row must be digit!")
+        self.columns_length = Validation.input_column_length()
+        self.rows_length = Validation.input_row_length()
                     
     def data_config_custom(self):
         self.data_config()

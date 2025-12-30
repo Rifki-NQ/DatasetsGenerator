@@ -12,6 +12,28 @@ class Validation:
             print("Inputted index must be in digit!")
             return False
 
+    @staticmethod
+    def input_column_length() -> int:
+        while True:
+            columns_length = input("Select length of column: ")
+            if columns_length.isdigit():
+                columns_length = int(columns_length)
+                return columns_length
+            else:
+                print("length of column must be digit!")
+                
+    @staticmethod
+    def input_row_length() -> int:
+        while True:
+            rows_length = input("Select length of row: ")
+            if rows_length.isdigit() and int(rows_length) > 0:
+                rows_length = int(rows_length)
+                return rows_length
+            elif rows_length.isdigit():
+                print("Length of row must be at least 1")
+            else:
+                print("Length of row must be digit!")
+
 class DataIO:
     def __init__(self, file_path, value_setting: bool):
         self.file_path = file_path

@@ -23,6 +23,8 @@ class MainMenu:
                 generator.start_generating(custom=True)
             elif index == 3:
                 generator.set_random_values()
+            elif index == 4:
+                generator.dataset_file_info()
         elif index.lower() == "q":
             self.exit()
 
@@ -37,5 +39,5 @@ class MainMenu:
         self.running = False
     
 if __name__ == "__main__":
-    app = MainMenu(3)
+    app = MainMenu(4)
     app.run()
