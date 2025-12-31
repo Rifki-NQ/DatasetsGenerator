@@ -6,6 +6,7 @@ from core.utils import Validation, DataIO
 
 class Generator:
     def __init__(self, file_path):
+        self.file_name = ""
         self.file_path = file_path
         self.random_setting_value_path = "data/random_values_setting.csv"
         self.generated_df = {}
@@ -92,6 +93,8 @@ class Generator:
         self.update_random_values(how="push")
             
     def data_config(self):
+        data_io = DataIO(self.file_path, value_setting=False)
+        self.file_path = data_io.input_file_name()
         self.columns_length = Validation.input_column_length()
         self.rows_length = Validation.input_row_length()
                     

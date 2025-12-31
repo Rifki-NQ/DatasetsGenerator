@@ -16,7 +16,7 @@ class MainMenu:
     def handle_choice(self, index):
         if Validation.check_input(index, 1, self.total_menu):
             index = int(index)
-            generator = Generator("data/data1.csv")
+            generator = Generator("data/")
             if index == 1:
                 generator.start_generating(custom=False)
             elif index == 2:

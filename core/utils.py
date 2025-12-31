@@ -1,4 +1,5 @@
 import pandas as pd
+import os
 
 class Validation:
     @staticmethod
@@ -19,8 +20,7 @@ class Validation:
             if columns_length.isdigit():
                 columns_length = int(columns_length)
                 return columns_length
-            else:
-                print("length of column must be digit!")
+            print("length of column must be digit!")
                 
     @staticmethod
     def input_row_length() -> int:
@@ -69,12 +69,12 @@ class DataIO:
             filename = input("Enter file name for the generated dataset: ")
             if filename[-4:] != ".csv":
                 print("file must be csv!")
-                return False
             elif filename == "random_values_setting.csv":
                 print("filename cannot be the same as random values setting!")
-                return False
             else:
-                self.file_path = f"data/{filename}"
+                filename = os.path.basename(filename).strip()
+                filename = self.file_path + filename
+                return filename
         
     def check_random_values_headers(self):
         df = self.read_data()
